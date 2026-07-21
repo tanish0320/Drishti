@@ -59,7 +59,9 @@ data class AppSettings(
     val pitch: Float = 1.0f,
     val hapticEnabled: Boolean = true,
     val ocrEnabled: Boolean = true,
-    val ocrMinTextSize: Float = 12.0f
+    val ocrMinTextSize: Float = 12.0f,
+    val overlayVisible: Boolean = true,
+    val debugMode: Boolean = true
 )
 
 data class AppState(

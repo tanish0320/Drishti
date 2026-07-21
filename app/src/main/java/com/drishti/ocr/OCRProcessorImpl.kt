@@ -13,6 +13,7 @@ import com.drishti.repository.SettingsRepository
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -59,7 +60,7 @@ class OCRProcessorImpl @Inject constructor(
     override val lastRecognizedStringState: StateFlow<String> = _lastRecognizedStringState.asStateFlow()
 
     // Latin Text Recognizer Client
-    private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    private var recognizer: TextRecognizer? = null
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     private var lastProcessedFrameTimeMs = 0L
@@ -69,6 +70,9 @@ class OCRProcessorImpl @Inject constructor(
     private var isRegistered = false
 
     override fun startOcr(): Flow<OCRResult> {
+        if (recognizer == null) {
+            recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        }
         if (!isRegistered) {
             frameDistributor.registerConsumer(this)
             isRegistered = true
@@ -86,6 +90,13 @@ class OCRProcessorImpl @Inject constructor(
             frameDistributor.unregisterConsumer(this)
             isRegistered = false
             Log.d("OCRProcessorImpl", "OCR unregistered as frame consumer.")
+        }
+        try {
+            recognizer?.close()
+            recognizer = null
+            Log.d("OCRProcessorImpl", "OCR Latin TextRecognizer released successfully.")
+        } catch (e: Exception) {
+            Log.e("OCRProcessorImpl", "Error closing OCR Latin TextRecognizer", e)
         }
         _ocrResultsState.value = OCRResult()
         _recognizedTextState.value = ""
@@ -115,11 +126,12 @@ class OCRProcessorImpl @Inject constructor(
             val startTime = System.currentTimeMillis()
             try {
                 val mediaImage = frame.imageProxy.image
-                if (mediaImage != null) {
+                val localRecognizer = recognizer
+                if (mediaImage != null && localRecognizer != null) {
                     val inputImage = InputImage.fromMediaImage(mediaImage, frame.rotationDegrees)
                     
                     // Perform recognition synchronously on our worker thread
-                    val textResult = Tasks.await(recognizer.process(inputImage))
+                    val textResult = Tasks.await(localRecognizer.process(inputImage))
                     val timestamp = frame.timestamp
 
                     // Extract and filter blocks

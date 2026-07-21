@@ -15,4 +15,5 @@ interface SpeechEngine {
     fun setLanguage(language: String)
     fun setSpeechRate(rate: Float)
     fun setPitch(pitch: Float)
+    fun shutdown()
 }

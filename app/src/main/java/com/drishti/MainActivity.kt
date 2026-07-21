@@ -44,6 +44,12 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var autoModeManager: com.drishti.controller.AutoModeManager
 
+    @Inject
+    lateinit var speechEngine: com.drishti.speech.SpeechEngine
+
+    @Inject
+    lateinit var hapticEngine: com.drishti.haptics.HapticEngine
+
     private val debugConsumer = DebugFrameConsumer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,5 +83,7 @@ class MainActivity : ComponentActivity() {
         frameDistributor.unregisterConsumer(debugConsumer)
         detectionEngine.stopDetection()
         ocrProcessor.stopOcr()
+        speechEngine.shutdown()
+        hapticEngine.cancel()
     }
 }

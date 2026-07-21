@@ -43,6 +43,7 @@ fun CameraOverlay(
     currentMode: AppMode,
     modeController: ModeControllerInterface,
     autoModeManager: AutoModeManager,
+    debugMode: Boolean,
     modifier: Modifier = Modifier
 ) {
     // Observe Walk mode states
@@ -234,7 +235,7 @@ fun CameraOverlay(
             }
 
             // 3. Draw Walk Dashboards
-            if (SHOW_DEBUG_OVERLAY) {
+            if (debugMode && SHOW_DEBUG_OVERLAY) {
                 // Left: Decision & Auto Mode Debug
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.drawRect(16f, 16f, 16f + panelWidth, 16f + panelHeight, debugBgPaint)
@@ -327,7 +328,7 @@ fun CameraOverlay(
             }
 
             // 2. Draw OCR Dashboards
-            if (SHOW_DEBUG_OVERLAY) {
+            if (debugMode && SHOW_DEBUG_OVERLAY) {
                 // Left: OCR & Auto Mode Debug
                 drawIntoCanvas { canvas ->
                     canvas.nativeCanvas.drawRect(16f, 16f, 16f + panelWidth, 16f + panelHeight, debugBgPaint)

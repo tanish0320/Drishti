@@ -33,4 +33,52 @@ class SettingsViewModel @Inject constructor(
             settingsRepository.updateHapticIntensity(intensity)
         }
     }
+
+    fun setHapticEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateHapticEnabled(enabled)
+        }
+    }
+
+    fun setOcrEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateOcrEnabled(enabled)
+        }
+    }
+
+    fun setOcrMinTextSize(size: Float) {
+        viewModelScope.launch {
+            settingsRepository.updateOcrMinTextSize(size)
+        }
+    }
+
+    fun setSpeechEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateSpeechEnabled(enabled)
+        }
+    }
+
+    fun setSpeechRate(rate: Float) {
+        viewModelScope.launch {
+            settingsRepository.updateSpeechRate(rate)
+        }
+    }
+
+    fun setPitch(pitch: Float) {
+        viewModelScope.launch {
+            settingsRepository.updatePitch(pitch)
+        }
+    }
+
+    fun setOverlayVisible(visible: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateOverlayVisible(visible)
+        }
+    }
+
+    fun setDebugMode(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateDebugMode(enabled)
+        }
+    }
 }

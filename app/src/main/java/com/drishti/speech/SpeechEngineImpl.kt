@@ -169,4 +169,16 @@ class SpeechEngineImpl @Inject constructor(
     override fun setPitch(pitch: Float) {
         tts?.setPitch(pitch)
     }
+
+    override fun shutdown() {
+        try {
+            tts?.stop()
+            tts?.shutdown()
+            tts = null
+            _ttsStatusState.value = "SHUTDOWN"
+            Log.i("SpeechEngineImpl", "TextToSpeech engine shut down successfully.")
+        } catch (e: Exception) {
+            Log.e("SpeechEngineImpl", "Error during TextToSpeech shutdown", e)
+        }
+    }
 }

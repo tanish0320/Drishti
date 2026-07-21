@@ -104,12 +104,22 @@ class DetectionEngineImpl @Inject constructor(
     }
 
     override fun startDetection(): Flow<DetectionResult> {
+        if (interpreter == null) {
+            initializeInterpreter()
+        }
         frameDistributor.registerConsumer(this)
         return _detectionFlow.asSharedFlow()
     }
 
     override fun stopDetection() {
         frameDistributor.unregisterConsumer(this)
+        try {
+            interpreter?.close()
+            interpreter = null
+            Log.i("DetectionEngineImpl", "YOLO TFLite interpreter released successfully.")
+        } catch (e: Exception) {
+            Log.e("DetectionEngineImpl", "Error closing YOLO TFLite interpreter", e)
+        }
     }
 
     override fun processFrame(frame: CameraFrame): DetectionResult {

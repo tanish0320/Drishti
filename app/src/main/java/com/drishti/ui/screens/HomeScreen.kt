@@ -133,7 +133,9 @@ fun HomeScreen(
                 ocrProcessor = viewModel.ocrProcessor,
                 currentMode = uiState.currentMode,
                 modeController = viewModel.modeController,
-                autoModeManager = viewModel.autoModeManager
+                autoModeManager = viewModel.autoModeManager,
+                settingsRepository = viewModel.settingsRepository,
+                performanceMonitor = viewModel.performanceMonitor
             )
 
             // Mode Selection Grid (Massive Buttons)

@@ -21,6 +21,9 @@ import com.drishti.haptics.HapticEngine
 import com.drishti.ocr.OCRProcessor
 import com.drishti.speech.SpeechEngine
 
+import com.drishti.repository.SettingsRepository
+import com.drishti.utils.PerformanceMonitor
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val controllerRepository: ControllerRepository,
@@ -31,7 +34,9 @@ class HomeViewModel @Inject constructor(
     val hapticEngine: HapticEngine,
     val ocrProcessor: OCRProcessor,
     val modeController: ModeControllerInterface,
-    val autoModeManager: AutoModeManager
+    val autoModeManager: AutoModeManager,
+    val settingsRepository: SettingsRepository,
+    val performanceMonitor: PerformanceMonitor
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AppUiState())

@@ -16,9 +16,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -31,7 +34,9 @@ import com.drishti.detection.DetectionEngine
 import com.drishti.haptics.HapticEngine
 import com.drishti.models.AppMode
 import com.drishti.ocr.OCRProcessor
+import com.drishti.repository.SettingsRepository
 import com.drishti.speech.SpeechEngine
+import com.drishti.utils.PerformanceMonitor
 import java.util.concurrent.Executors
 
 @Composable
@@ -45,6 +50,8 @@ fun CameraPreview(
     currentMode: AppMode,
     modeController: ModeControllerInterface,
     autoModeManager: AutoModeManager,
+    settingsRepository: SettingsRepository,
+    performanceMonitor: PerformanceMonitor,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -61,6 +68,7 @@ fun CameraPreview(
 
     // Performance: background executor for the analyzer prevents UI thread blocking
     val analyzerExecutor = remember { Executors.newSingleThreadExecutor() }
+    val settingsState by settingsRepository.settings.collectAsState()
 
     val cameraController = remember {
         LifecycleCameraController(context).apply {
@@ -92,17 +100,13 @@ fun CameraPreview(
             .fillMaxWidth()
             .aspectRatio(1f) // Maintain square UI element ratio from Stitch layout
             .clip(RoundedCornerShape(12.dp))
-            .border(4.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(Color.Black)
     ) {
         AndroidView(
             factory = { ctx ->
                 PreviewView(ctx).apply {
                     scaleType = PreviewView.ScaleType.FILL_CENTER
-                    layoutParams = ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
+                    implementationMode = PreviewView.ImplementationMode.COMPATIBLE
                     controller = cameraController
                     cameraController.bindToLifecycle(lifecycleOwner)
                 }
@@ -111,16 +115,29 @@ fun CameraPreview(
         )
 
         // Overlay matches camera preview size exactly
-        CameraOverlay(
-            detectionEngine = detectionEngine,
-            decisionEngine = decisionEngine,
-            speechEngine = speechEngine,
-            hapticEngine = hapticEngine,
-            ocrProcessor = ocrProcessor,
-            currentMode = currentMode,
-            modeController = modeController,
-            autoModeManager = autoModeManager,
-            modifier = Modifier.fillMaxSize()
-        )
+        if (settingsState.overlayVisible) {
+            CameraOverlay(
+                detectionEngine = detectionEngine,
+                decisionEngine = decisionEngine,
+                speechEngine = speechEngine,
+                hapticEngine = hapticEngine,
+                ocrProcessor = ocrProcessor,
+                currentMode = currentMode,
+                modeController = modeController,
+                autoModeManager = autoModeManager,
+                debugMode = settingsState.debugMode,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        // Diagnostic Gauges Overlay Card (Conditional on debugMode)
+        if (settingsState.debugMode) {
+            PerformanceOverlay(
+                performanceMonitor = performanceMonitor,
+                modifier = Modifier
+                    .align(androidx.compose.ui.Alignment.BottomEnd)
+                    .padding(16.dp)
+            )
+        }
     }
 }
