@@ -1,0 +1,1 @@
+This is a placeholder file for model.tflite. Since a real YOLOv8n TFLite model is not pre-packaged in the workspace, this file acts as a placeholder to test the model existence, loading errors, and trigger the fallback simulation code path cleanly.
