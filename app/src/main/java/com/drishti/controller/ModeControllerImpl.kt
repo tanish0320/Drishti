@@ -19,11 +19,11 @@ class ModeControllerImpl @Inject constructor(
     private val speechEngine: SpeechEngine
 ) : ModeControllerInterface {
 
-    private val _currentModeState = MutableStateFlow<AppMode>(AppMode.AUTO)
-    override val currentModeState: StateFlow<AppMode> = _currentModeState.asStateFlow()
+    private val _currentModeState = MutableStateFlow<AppMode>(AppMode.WALK)
+    override val effectiveModeState: StateFlow<AppMode> = _currentModeState.asStateFlow()
 
     private val _userSelectedModeState = MutableStateFlow<AppMode>(AppMode.AUTO)
-    val userSelectedModeState: StateFlow<AppMode> = _userSelectedModeState.asStateFlow()
+    override val userSelectedModeState: StateFlow<AppMode> = _userSelectedModeState.asStateFlow()
 
     private val _modeReasonState = MutableStateFlow<String>("Defaulting to Auto Mode.")
     val modeReasonState: StateFlow<String> = _modeReasonState.asStateFlow()
@@ -41,11 +41,14 @@ class ModeControllerImpl @Inject constructor(
     }
 
     override fun setMode(mode: AppMode) {
+        Log.d("DrishtiDebug", "Mode changed (User Selected): $mode")
         _userSelectedModeState.value = mode
         if (mode == AppMode.WALK || mode == AppMode.READ) {
             setEffectiveMode(mode, "Manual override select: ${mode.name}")
         } else {
             _modeReasonState.value = "Auto mode enabled. Assessing scene..."
+            speechEngine.stop()
+            speechEngine.speak(SpeechRequest("Auto mode."))
         }
     }
 
@@ -86,6 +89,6 @@ class ModeControllerImpl @Inject constructor(
         speechEngine.stop()
         val speechText = if (targetMode == AppMode.READ) "Reading mode." else "Navigation mode."
         speechEngine.speak(SpeechRequest(text = speechText))
-        Log.d("ModeControllerImpl", "Mode Switch: ${previous.name} -> ${targetMode.name} | Reason: $reason")
+        Log.d("DrishtiDebug", "Mode changed (Effective): ${previous.name} -> ${targetMode.name} | Reason: $reason")
     }
 }

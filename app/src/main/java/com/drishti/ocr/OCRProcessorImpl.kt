@@ -68,6 +68,7 @@ class OCRProcessorImpl @Inject constructor(
     private var fpsLastUpdateTime = 0L
     private var lastRecognizedText = ""
     private var isRegistered = false
+    private var wasOcrActive = false
 
     override fun startOcr(): Flow<OCRResult> {
         if (recognizer == null) {
@@ -111,11 +112,21 @@ class OCRProcessorImpl @Inject constructor(
 
     override fun onFrame(frame: CameraFrame, releaseCallback: () -> Unit) {
         val currentTime = System.currentTimeMillis()
-        val isReadMode = controllerRepository.currentMode.value == AppMode.READ
+        val userMode = controllerRepository.userSelectedMode.value
         val settings = settingsRepository.settings.value
+        val isOcrActive = (userMode == AppMode.READ || userMode == AppMode.AUTO) && settings.ocrEnabled
+
+        if (isOcrActive != wasOcrActive) {
+            wasOcrActive = isOcrActive
+            if (isOcrActive) {
+                Log.d("DrishtiDebug", "OCR started")
+            } else {
+                Log.d("DrishtiDebug", "OCR stopped")
+            }
+        }
 
         // Throttle check
-        if (!isReadMode || !settings.ocrEnabled || (currentTime - lastProcessedFrameTimeMs) < OCR_INTERVAL_MS) {
+        if (!isOcrActive || (currentTime - lastProcessedFrameTimeMs) < OCR_INTERVAL_MS) {
             releaseCallback()
             return
         }

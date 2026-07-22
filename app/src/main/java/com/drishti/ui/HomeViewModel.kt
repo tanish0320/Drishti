@@ -44,8 +44,20 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            controllerRepository.currentMode.collect { mode ->
+            controllerRepository.userSelectedMode.collect { mode ->
+                android.util.Log.d("DrishtiDebug", "StateFlow emitted: userSelectedMode = $mode")
                 _uiState.value = _uiState.value.copy(currentMode = mode)
+            }
+        }
+        viewModelScope.launch {
+            controllerRepository.effectiveMode.collect { mode ->
+                android.util.Log.d("DrishtiDebug", "StateFlow emitted: effectiveMode = $mode")
+                _uiState.value = _uiState.value.copy(effectiveMode = mode)
+            }
+        }
+        viewModelScope.launch {
+            settingsRepository.settings.collect { settings ->
+                android.util.Log.d("DrishtiDebug", "StateFlow emitted: AppSettings updated = $settings")
             }
         }
     }

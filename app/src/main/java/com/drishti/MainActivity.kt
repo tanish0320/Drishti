@@ -50,6 +50,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var hapticEngine: com.drishti.haptics.HapticEngine
 
+    @Inject
+    lateinit var navigationFusionEngine: com.drishti.navigation.NavigationFusionEngine
+
     private val debugConsumer = DebugFrameConsumer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +61,7 @@ class MainActivity : ComponentActivity() {
         detectionEngine.startDetection()
         speechManager.startObserving()
         hapticManager.startObserving()
+        navigationFusionEngine.startObserving()
         ocrProcessor.startOcr()
         ocrManager.startObserving()
         autoModeManager.startObserving()

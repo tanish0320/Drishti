@@ -46,6 +46,10 @@ fun CameraOverlay(
     debugMode: Boolean,
     modifier: Modifier = Modifier
 ) {
+    androidx.compose.runtime.SideEffect {
+        android.util.Log.d("DrishtiDebug", "Overlay recomposed: CameraOverlay")
+    }
+
     // Observe Walk mode states
     val prioritizedDetections by detectionEngine.prioritizedDetectionsState.collectAsState()
     val lastInferenceDuration by detectionEngine.inferenceDurationState.collectAsState()

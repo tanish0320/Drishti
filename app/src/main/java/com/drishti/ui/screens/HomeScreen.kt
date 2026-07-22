@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SmartToy
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,7 +34,8 @@ import com.drishti.ui.components.ModeButton
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onNavigateClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
@@ -64,7 +66,10 @@ fun HomeScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = onSettingsClick,
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: TopAppBar Settings")
+                            onSettingsClick()
+                        },
                         modifier = Modifier.size(64.dp)
                     ) {
                         Icon(
@@ -131,7 +136,7 @@ fun HomeScreen(
                 speechEngine = viewModel.speechEngine,
                 hapticEngine = viewModel.hapticEngine,
                 ocrProcessor = viewModel.ocrProcessor,
-                currentMode = uiState.currentMode,
+                currentMode = uiState.effectiveMode,
                 modeController = viewModel.modeController,
                 autoModeManager = viewModel.autoModeManager,
                 settingsRepository = viewModel.settingsRepository,
@@ -147,21 +152,30 @@ fun HomeScreen(
                     title = "WALK",
                     icon = Icons.Default.DirectionsWalk,
                     selected = uiState.currentMode == AppMode.WALK,
-                    onClick = { viewModel.setMode(AppMode.WALK) },
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: WALK Mode Button")
+                        viewModel.setMode(AppMode.WALK)
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 ModeButton(
                     title = "READ",
                     icon = Icons.Default.MenuBook,
                     selected = uiState.currentMode == AppMode.READ,
-                    onClick = { viewModel.setMode(AppMode.READ) },
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: READ Mode Button")
+                        viewModel.setMode(AppMode.READ)
+                    },
                     modifier = Modifier.weight(1f)
                 )
                 ModeButton(
                     title = "AUTO",
                     icon = Icons.Default.SmartToy,
                     selected = uiState.currentMode == AppMode.AUTO,
-                    onClick = { viewModel.setMode(AppMode.AUTO) },
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: AUTO Mode Button")
+                        viewModel.setMode(AppMode.AUTO)
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -171,9 +185,46 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // AI NAVIGATION ASSISTANT
+                Button(
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: AI NAVIGATION ASSISTANT")
+                        onNavigateClick()
+                    },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .border(4.dp, MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(12.dp))
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Explore,
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Text(
+                            text = "AI NAVIGATION ASSISTANT",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                }
+
                 // SYSTEM SETTINGS
                 Button(
-                    onClick = onSettingsClick,
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: SYSTEM SETTINGS")
+                        onSettingsClick()
+                    },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -204,7 +255,10 @@ fun HomeScreen(
 
                 // EMERGENCY STOP
                 Button(
-                    onClick = { viewModel.emergencyStop() },
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: EMERGENCY STOP")
+                        viewModel.emergencyStop()
+                    },
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,

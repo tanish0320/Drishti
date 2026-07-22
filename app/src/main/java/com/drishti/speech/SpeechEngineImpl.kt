@@ -46,6 +46,7 @@ class SpeechEngineImpl @Inject constructor(
                 _ttsStatusState.value = "READY"
                 setupProgressListener()
                 observeSettings()
+                playNextInQueue()
             } else {
                 _ttsStatusState.value = "INIT_FAILED"
                 Log.e("SpeechEngineImpl", "TextToSpeech initialization failed with status: $status")
@@ -56,11 +57,13 @@ class SpeechEngineImpl @Inject constructor(
     private fun setupProgressListener() {
         tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
+                Log.d("DrishtiDebug", "Speech started: ${utteranceId ?: ""}")
                 _currentSpokenMessageState.value = utteranceId ?: ""
                 _lastAnnouncementTimestampState.value = System.currentTimeMillis()
             }
 
             override fun onDone(utteranceId: String?) {
+                Log.d("DrishtiDebug", "Speech stopped: ${utteranceId ?: ""}")
                 _currentSpokenMessageState.value = ""
                 coroutineScope.launch {
                     playNextInQueue()
@@ -69,6 +72,7 @@ class SpeechEngineImpl @Inject constructor(
 
             @Deprecated("Deprecated in Java")
             override fun onError(utteranceId: String?) {
+                Log.d("DrishtiDebug", "Speech stopped (error): ${utteranceId ?: ""}")
                 _currentSpokenMessageState.value = ""
                 _ttsStatusState.value = "ERROR"
                 coroutineScope.launch {
@@ -106,11 +110,13 @@ class SpeechEngineImpl @Inject constructor(
         if (isCritical) {
             speechQueue.clear()
             _speechQueueLengthState.value = 0
-            speakInternal(text, true)
+            if (_ttsStatusState.value == "READY") {
+                speakInternal(text, true)
+            }
         } else {
             speechQueue.enqueue(text, false)
             _speechQueueLengthState.value = speechQueue.size()
-            if (tts?.isSpeaking == false) {
+            if (_ttsStatusState.value == "READY" && tts?.isSpeaking == false) {
                 playNextInQueue()
             }
         }
@@ -125,11 +131,15 @@ class SpeechEngineImpl @Inject constructor(
         val result = tts?.speak(text, queueMode, params, text)
         if (result == TextToSpeech.ERROR) {
             Log.e("SpeechEngineImpl", "Error executing speak command for text: $text")
+            coroutineScope.launch {
+                playNextInQueue()
+            }
         }
     }
 
     private fun playNextInQueue() {
         _speechQueueLengthState.value = speechQueue.size()
+        if (_ttsStatusState.value != "READY") return
         if (speechQueue.isEmpty()) return
         val item = speechQueue.poll()
         if (item != null) {

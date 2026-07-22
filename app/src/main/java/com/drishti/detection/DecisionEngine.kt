@@ -145,6 +145,7 @@ class DecisionEngine @Inject constructor(
         val isNewLevel = candidate.threatLevel != lastEmittedDecision.threatLevel
         
         if (isNewObject || isNewLevel || lastEmittedDecision == defaultSafeDecision) {
+            android.util.Log.d("DrishtiDebug", "Navigation decision: ${candidate.threatLevel} | Reason: ${candidate.reason}")
             _navigationDecisionState.value = candidate
             lastEmittedDecision = candidate
             lastDecisionChangeTimestamp = currentTime

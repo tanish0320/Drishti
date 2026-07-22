@@ -61,7 +61,14 @@ data class AppSettings(
     val ocrEnabled: Boolean = true,
     val ocrMinTextSize: Float = 12.0f,
     val overlayVisible: Boolean = true,
-    val debugMode: Boolean = true
+    val debugMode: Boolean = true,
+    val googleMapsNav: Boolean = true,
+    val voiceNav: Boolean = true,
+    val routeRecalculation: Boolean = true,
+    val walkingPreference: String = "Shortest",
+    val avoidBusyRoads: Boolean = false,
+    val avoidStairs: Boolean = false,
+    val navVoiceVolume: Float = 0.8f
 )
 
 data class AppState(
@@ -70,6 +77,7 @@ data class AppState(
 
 data class AppUiState(
     val currentMode: AppMode = AppMode.WALK,
+    val effectiveMode: AppMode = AppMode.WALK,
     val statusMessage: String = "SYSTEM STATUS: CAMERA READY",
     val isCameraReady: Boolean = true,
     val isProcessing: Boolean = false,

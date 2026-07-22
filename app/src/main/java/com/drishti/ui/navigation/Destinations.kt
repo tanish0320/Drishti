@@ -6,4 +6,5 @@ object Destinations {
     const val SETTINGS = "settings"
     const val ABOUT = "about"
     const val PERMISSIONS = "permissions"
+    const val NAVIGATION = "navigation"
 }

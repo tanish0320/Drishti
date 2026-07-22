@@ -16,7 +16,8 @@ class SpeechManager @Inject constructor(
     private val decisionEngine: DecisionEngine,
     private val speechGenerator: NavigationSpeechGenerator,
     private val speechEngine: SpeechEngine,
-    private val controllerRepository: ControllerRepository
+    private val controllerRepository: ControllerRepository,
+    private val routeManager: com.drishti.navigation.RouteManager
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var lastSpokenDecision: NavigationDecision? = null
@@ -39,8 +40,14 @@ class SpeechManager @Inject constructor(
     }
 
     private fun processDecision(decision: NavigationDecision) {
-        val currentMode = controllerRepository.currentMode.value
-        val isReadMode = currentMode == AppMode.READ
+        // If route navigation is active, delegate all speaking to NavigationFusionEngine
+        val session = routeManager.activeSession.value
+        if (session != null && session.isActive) {
+            return
+        }
+
+        val effectiveMode = controllerRepository.effectiveMode.value
+        val isReadMode = effectiveMode == AppMode.READ
 
         // Rule 5: Pause navigation announcements in READ mode unless danger (WARNING or CRITICAL) appears
         val isDanger = decision.threatLevel == ThreatLevel.WARNING || decision.threatLevel == ThreatLevel.CRITICAL

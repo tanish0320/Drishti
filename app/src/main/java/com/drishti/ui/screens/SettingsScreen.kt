@@ -50,7 +50,10 @@ fun SettingsScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackClick,
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Go Back")
+                            onBackClick()
+                        },
                         modifier = Modifier.size(64.dp)
                     ) {
                         Icon(
@@ -173,7 +176,10 @@ fun SettingsScreen(
                 ) {
                     val isEnglish = settingsState.language == "English"
                     Button(
-                        onClick = { viewModel.setLanguage("English") },
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Language English")
+                            viewModel.setLanguage("English")
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(80.dp),
@@ -197,7 +203,10 @@ fun SettingsScreen(
 
                     val isHindi = settingsState.language == "Hindi"
                     Button(
-                        onClick = { viewModel.setLanguage("Hindi") },
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Language Hindi")
+                            viewModel.setLanguage("Hindi")
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(80.dp),
@@ -255,7 +264,10 @@ fun SettingsScreen(
                 ) {
                     val isLight = settingsState.theme == "Light"
                     Button(
-                        onClick = { viewModel.setTheme("Light") },
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Theme Light")
+                            viewModel.setTheme("Light")
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(80.dp),
@@ -289,7 +301,10 @@ fun SettingsScreen(
 
                     val isDark = settingsState.theme == "Dark"
                     Button(
-                        onClick = { viewModel.setTheme("Dark") },
+                        onClick = {
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Theme Dark")
+                            viewModel.setTheme("Dark")
+                        },
                         modifier = Modifier
                             .weight(1f)
                             .height(80.dp),
@@ -369,7 +384,10 @@ fun SettingsScreen(
                                     color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                .clickable { viewModel.setHapticIntensity(intensity) }
+                                .clickable {
+                                    android.util.Log.d("DrishtiDebug", "Button pressed: Haptic Intensity $intensity")
+                                    viewModel.setHapticIntensity(intensity)
+                                }
                                 .padding(horizontal = 24.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -422,7 +440,15 @@ fun SettingsScreen(
 
                 // Speech Toggle Row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.speechEnabled
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle SpeechEnabled to $targetVal")
+                            viewModel.setSpeechEnabled(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -433,13 +459,21 @@ fun SettingsScreen(
                     )
                     androidx.compose.material3.Switch(
                         checked = settingsState.speechEnabled,
-                        onCheckedChange = { viewModel.setSpeechEnabled(it) }
+                        onCheckedChange = null
                     )
                 }
 
                 // Haptics Toggle Row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.hapticEnabled
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle HapticEnabled to $targetVal")
+                            viewModel.setHapticEnabled(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -450,13 +484,21 @@ fun SettingsScreen(
                     )
                     androidx.compose.material3.Switch(
                         checked = settingsState.hapticEnabled,
-                        onCheckedChange = { viewModel.setHapticEnabled(it) }
+                        onCheckedChange = null
                     )
                 }
 
                 // OCR Toggle Row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.ocrEnabled
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle OcrEnabled to $targetVal")
+                            viewModel.setOcrEnabled(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -467,13 +509,21 @@ fun SettingsScreen(
                     )
                     androidx.compose.material3.Switch(
                         checked = settingsState.ocrEnabled,
-                        onCheckedChange = { viewModel.setOcrEnabled(it) }
+                        onCheckedChange = null
                     )
                 }
 
                 // Debug Mode Toggle Row
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.debugMode
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle DebugMode to $targetVal")
+                            viewModel.setDebugMode(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -484,7 +534,161 @@ fun SettingsScreen(
                     )
                     androidx.compose.material3.Switch(
                         checked = settingsState.debugMode,
-                        onCheckedChange = { viewModel.setDebugMode(it) }
+                        onCheckedChange = null
+                    )
+                }
+            }
+
+            // AI Navigation Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Explore,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Text(
+                        text = "AI Navigation Settings",
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                // Google Maps Nav Toggle Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.googleMapsNav
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle GoogleMapsNav to $targetVal")
+                            viewModel.setGoogleMapsNav(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Google Maps Navigation",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    androidx.compose.material3.Switch(
+                        checked = settingsState.googleMapsNav,
+                        onCheckedChange = null
+                    )
+                }
+
+                // Voice Nav Toggle Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.voiceNav
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle VoiceNav to $targetVal")
+                            viewModel.setVoiceNav(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Voice Guidance",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    androidx.compose.material3.Switch(
+                        checked = settingsState.voiceNav,
+                        onCheckedChange = null
+                    )
+                }
+
+                // Route Recalculation Toggle Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.routeRecalculation
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle RouteRecalculation to $targetVal")
+                            viewModel.setRouteRecalculation(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Route Recalculation",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    androidx.compose.material3.Switch(
+                        checked = settingsState.routeRecalculation,
+                        onCheckedChange = null
+                    )
+                }
+
+                // Avoid Busy Roads Toggle Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.avoidBusyRoads
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle AvoidBusyRoads to $targetVal")
+                            viewModel.setAvoidBusyRoads(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Avoid Busy Roads",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    androidx.compose.material3.Switch(
+                        checked = settingsState.avoidBusyRoads,
+                        onCheckedChange = null
+                    )
+                }
+
+                // Avoid Stairs Toggle Row
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            val targetVal = !settingsState.avoidStairs
+                            android.util.Log.d("DrishtiDebug", "Button pressed: Toggle AvoidStairs to $targetVal")
+                            viewModel.setAvoidStairs(targetVal)
+                        }
+                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Avoid Stairs",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    androidx.compose.material3.Switch(
+                        checked = settingsState.avoidStairs,
+                        onCheckedChange = null
                     )
                 }
             }
@@ -498,7 +702,10 @@ fun SettingsScreen(
             ) {
                 // Permissions utility button (Solid primary blue, 80dp)
                 Button(
-                    onClick = onPermissionsClick,
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: Permissions utility")
+                        onPermissionsClick()
+                    },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -529,7 +736,10 @@ fun SettingsScreen(
 
                 // About Drishti utility button (White background, blue border)
                 Button(
-                    onClick = onAboutClick,
+                    onClick = {
+                        android.util.Log.d("DrishtiDebug", "Button pressed: About Drishti utility")
+                        onAboutClick()
+                    },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surface,

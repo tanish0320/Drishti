@@ -12,11 +12,13 @@ import com.drishti.ui.HomeViewModel
 import com.drishti.ui.PermissionViewModel
 import com.drishti.ui.SettingsViewModel
 import com.drishti.ui.SplashViewModel
+import com.drishti.ui.NavigationViewModel
 import com.drishti.ui.screens.AboutScreen
 import com.drishti.ui.screens.HomeScreen
 import com.drishti.ui.screens.PermissionsScreen
 import com.drishti.ui.screens.SettingsScreen
 import com.drishti.ui.screens.SplashScreen
+import com.drishti.ui.screens.NavigationScreen
 
 @Composable
 fun DrishtiNavGraph(
@@ -67,6 +69,22 @@ fun DrishtiNavGraph(
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 viewModel = viewModel,
+                onSettingsClick = {
+                    navController.navigate(Destinations.SETTINGS)
+                },
+                onNavigateClick = {
+                    navController.navigate(Destinations.NAVIGATION)
+                }
+            )
+        }
+
+        composable(Destinations.NAVIGATION) {
+            val viewModel: NavigationViewModel = hiltViewModel()
+            NavigationScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.popBackStack()
+                },
                 onSettingsClick = {
                     navController.navigate(Destinations.SETTINGS)
                 }

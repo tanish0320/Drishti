@@ -30,7 +30,14 @@ class SettingsRepository @Inject constructor(
             ocrEnabled = prefs.getBoolean("ocr_enabled", true),
             ocrMinTextSize = prefs.getFloat("ocr_min_text_size", 12.0f),
             overlayVisible = prefs.getBoolean("overlay_visible", true),
-            debugMode = prefs.getBoolean("debug_mode", true)
+            debugMode = prefs.getBoolean("debug_mode", true),
+            googleMapsNav = prefs.getBoolean("google_maps_nav", true),
+            voiceNav = prefs.getBoolean("voice_nav", true),
+            routeRecalculation = prefs.getBoolean("route_recalculation", true),
+            walkingPreference = prefs.getString("walking_preference", "Shortest") ?: "Shortest",
+            avoidBusyRoads = prefs.getBoolean("avoid_busy_roads", false),
+            avoidStairs = prefs.getBoolean("avoid_stairs", false),
+            navVoiceVolume = prefs.getFloat("nav_voice_volume", 0.8f)
         )
     }
 
@@ -48,6 +55,13 @@ class SettingsRepository @Inject constructor(
             putFloat("ocr_min_text_size", newSettings.ocrMinTextSize)
             putBoolean("overlay_visible", newSettings.overlayVisible)
             putBoolean("debug_mode", newSettings.debugMode)
+            putBoolean("google_maps_nav", newSettings.googleMapsNav)
+            putBoolean("voice_nav", newSettings.voiceNav)
+            putBoolean("route_recalculation", newSettings.routeRecalculation)
+            putString("walking_preference", newSettings.walkingPreference)
+            putBoolean("avoid_busy_roads", newSettings.avoidBusyRoads)
+            putBoolean("avoid_stairs", newSettings.avoidStairs)
+            putFloat("nav_voice_volume", newSettings.navVoiceVolume)
             apply()
         }
     }
@@ -95,5 +109,33 @@ class SettingsRepository @Inject constructor(
     fun updateDebugMode(enabled: Boolean) {
         saveSettings(_settings.value.copy(debugMode = enabled))
         com.drishti.utils.Logger.setDebugEnabled(enabled)
+    }
+
+    fun updateGoogleMapsNav(enabled: Boolean) {
+        saveSettings(_settings.value.copy(googleMapsNav = enabled))
+    }
+
+    fun updateVoiceNav(enabled: Boolean) {
+        saveSettings(_settings.value.copy(voiceNav = enabled))
+    }
+
+    fun updateRouteRecalculation(enabled: Boolean) {
+        saveSettings(_settings.value.copy(routeRecalculation = enabled))
+    }
+
+    fun updateWalkingPreference(preference: String) {
+        saveSettings(_settings.value.copy(walkingPreference = preference))
+    }
+
+    fun updateAvoidBusyRoads(enabled: Boolean) {
+        saveSettings(_settings.value.copy(avoidBusyRoads = enabled))
+    }
+
+    fun updateAvoidStairs(enabled: Boolean) {
+        saveSettings(_settings.value.copy(avoidStairs = enabled))
+    }
+
+    fun updateNavVoiceVolume(volume: Float) {
+        saveSettings(_settings.value.copy(navVoiceVolume = volume))
     }
 }

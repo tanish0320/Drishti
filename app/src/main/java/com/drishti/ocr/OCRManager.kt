@@ -38,9 +38,8 @@ class OCRManager @Inject constructor(
         }
         
         scope.launch {
-            controllerRepository.currentMode.collect { mode ->
+            controllerRepository.effectiveMode.collect { mode ->
                 if (mode != AppMode.READ) {
-                    speechEngine.stop()
                     lastSpokenText = ""
                 }
             }
@@ -49,7 +48,7 @@ class OCRManager @Inject constructor(
 
     private fun processOcrText(text: String) {
         val settings = settingsRepository.settings.value
-        val isReadMode = controllerRepository.currentMode.value == AppMode.READ
+        val isReadMode = controllerRepository.effectiveMode.value == AppMode.READ
 
         if (!settings.speechEnabled || !settings.ocrEnabled || !isReadMode || text.isEmpty()) return
 

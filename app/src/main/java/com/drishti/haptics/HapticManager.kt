@@ -3,6 +3,8 @@ package com.drishti.haptics
 import com.drishti.detection.DecisionEngine
 import com.drishti.models.NavigationDecision
 import com.drishti.models.ThreatLevel
+import com.drishti.models.AppMode
+import com.drishti.repository.ControllerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,7 +14,8 @@ import javax.inject.Singleton
 @Singleton
 class HapticManager @Inject constructor(
     private val decisionEngine: DecisionEngine,
-    private val hapticEngine: HapticEngine
+    private val hapticEngine: HapticEngine,
+    private val controllerRepository: ControllerRepository
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var lastDecision: NavigationDecision? = null
@@ -29,6 +32,17 @@ class HapticManager @Inject constructor(
     }
 
     private fun processDecision(decision: NavigationDecision) {
+        val effectiveMode = controllerRepository.effectiveMode.value
+        val isReadMode = effectiveMode == AppMode.READ
+        val isDanger = decision.threatLevel == ThreatLevel.WARNING || decision.threatLevel == ThreatLevel.CRITICAL
+
+        // Pause navigation haptics in READ mode unless danger (WARNING or CRITICAL) appears
+        if (isReadMode && !isDanger) {
+            hapticEngine.cancel()
+            lastDecision = null
+            return
+        }
+
         val last = lastDecision
         lastDecision = decision
 

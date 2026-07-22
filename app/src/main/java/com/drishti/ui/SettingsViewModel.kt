@@ -81,4 +81,40 @@ class SettingsViewModel @Inject constructor(
             settingsRepository.updateDebugMode(enabled)
         }
     }
+
+    fun setGoogleMapsNav(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateGoogleMapsNav(enabled)
+        }
+    }
+
+    fun setVoiceNav(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateVoiceNav(enabled)
+        }
+    }
+
+    fun setRouteRecalculation(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateRouteRecalculation(enabled)
+        }
+    }
+
+    fun setAvoidBusyRoads(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateAvoidBusyRoads(enabled)
+        }
+    }
+
+    fun setAvoidStairs(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateAvoidStairs(enabled)
+        }
+    }
+
+    fun setNavVoiceVolume(volume: Float) {
+        viewModelScope.launch {
+            settingsRepository.updateNavVoiceVolume(volume)
+        }
+    }
 }

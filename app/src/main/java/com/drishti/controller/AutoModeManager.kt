@@ -113,6 +113,7 @@ class AutoModeManager @Inject constructor(
         }
 
         if (shouldSwitch) {
+            Log.d("DrishtiDebug", "Auto transition: $currentEffectiveMode -> $targetMode | Reason: $switchReason")
             lastModeSwitchTimestamp = currentTime
             controller.setEffectiveMode(targetMode, switchReason)
         }

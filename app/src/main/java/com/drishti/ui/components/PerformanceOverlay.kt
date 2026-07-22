@@ -21,6 +21,10 @@ fun PerformanceOverlay(
     performanceMonitor: PerformanceMonitor,
     modifier: Modifier = Modifier
 ) {
+    androidx.compose.runtime.SideEffect {
+        android.util.Log.d("DrishtiDebug", "Overlay recomposed: PerformanceOverlay")
+    }
+
     val snapshot by performanceMonitor.snapshotState.collectAsState()
 
     Column(
